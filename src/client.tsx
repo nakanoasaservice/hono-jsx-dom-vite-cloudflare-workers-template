@@ -1,27 +1,37 @@
 import { hc } from "hono/client";
-import { useState } from "hono/jsx";
+import { Suspense, use, useState } from "hono/jsx";
 import { render } from "hono/jsx/dom";
 import type { AppType } from "./index";
 
 const client = hc<AppType>("/");
 
-function App() {
-	const [message, setMessage] = useState<string>("");
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
+function MessageDisplay({
+	promise,
+}: {
+	promise: Promise<{ message: string }>;
+}) {
+	const data = use(promise);
+	return (
+		<div
+			style={{
+				padding: "20px",
+				backgroundColor: "#e8f5e9",
+				borderRadius: "4px",
+				fontSize: "18px",
+			}}
+		>
+			<strong>Message:</strong> {data.message}
+		</div>
+	);
+}
 
-	const fetchMessage = async () => {
-		setLoading(true);
-		setError(null);
-		try {
-			const res = await client.hello.$get();
-			const data = await res.json();
-			setMessage(data.message);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : "Failed to fetch message");
-		} finally {
-			setLoading(false);
-		}
+function App() {
+	const [messagePromise, setMessagePromise] = useState<Promise<{
+		message: string;
+	}> | null>(null);
+
+	const fetchMessage = () => {
+		setMessagePromise(client.hello.$get().then((res) => res.json()));
 	};
 
 	return (
@@ -38,41 +48,32 @@ function App() {
 				<button
 					type="button"
 					onClick={fetchMessage}
-					disabled={loading}
 					style={{
 						padding: "10px 20px",
 						fontSize: "16px",
-						cursor: loading ? "not-allowed" : "pointer",
-						opacity: loading ? 0.6 : 1,
+						cursor: "pointer",
 					}}
 				>
-					{loading ? "Loading..." : "Fetch Message"}
+					Fetch Message
 				</button>
 			</div>
-			{error && (
-				<div
-					style={{
-						padding: "10px",
-						backgroundColor: "#fee",
-						color: "#c33",
-						borderRadius: "4px",
-						marginBottom: "10px",
-					}}
+			{messagePromise && (
+				<Suspense
+					fallback={
+						<div
+							style={{
+								padding: "20px",
+								backgroundColor: "#f5f5f5",
+								borderRadius: "4px",
+								fontSize: "18px",
+							}}
+						>
+							Loading...
+						</div>
+					}
 				>
-					Error: {error}
-				</div>
-			)}
-			{message && (
-				<div
-					style={{
-						padding: "20px",
-						backgroundColor: "#e8f5e9",
-						borderRadius: "4px",
-						fontSize: "18px",
-					}}
-				>
-					<strong>Message:</strong> {message}
-				</div>
+					<MessageDisplay promise={messagePromise} />
+				</Suspense>
 			)}
 		</div>
 	);
