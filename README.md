@@ -86,3 +86,11 @@ pnpm deploy
 ## License
 
 MIT
+
+## Development toolchain
+
+Use Node.js 24 and the pnpm version pinned in `package.json`.
+Run `pnpm install --frozen-lockfile`, `pnpm check`, `pnpm test`, and `pnpm build`.
+Vite+ provides formatting, linting, type checks, tests and builds. Tests run
+locally in the Cloudflare Workers runtime. Use `pnpm run dev` to develop and
+`pnpm run cf-typegen` to regenerate Worker binding types.

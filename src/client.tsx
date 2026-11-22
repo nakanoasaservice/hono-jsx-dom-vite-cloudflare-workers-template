@@ -5,11 +5,7 @@ import type { AppType } from "./index";
 
 const client = hc<AppType>("/");
 
-function MessageDisplay({
-	promise,
-}: {
-	promise: Promise<{ message: string }>;
-}) {
+function MessageDisplay({ promise }: { promise: Promise<{ message: string }> }) {
 	const data = use(promise);
 	return (
 		<div
@@ -79,6 +75,6 @@ function App() {
 	);
 }
 
-// biome-ignore lint/style/noNonNullAssertion: root is guaranteed to be in the document
+// oxlint-disable-next-line typescript/no-non-null-assertion -- root is guaranteed to be in the document
 const root = document.getElementById("root")!;
 render(<App />, root);

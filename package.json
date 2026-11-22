@@ -4,28 +4,28 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"build": "vite build",
+		"build": "vp build",
 		"cf-typegen": "wrangler types",
 		"check-types": "tsc --noEmit",
-		"check:fix": "biome check --write",
-		"check": "biome check",
+		"check:fix": "vp check --fix",
+		"check": "vp check",
 		"deploy": "pnpm run build && wrangler deploy",
-		"dev": "vite dev",
-		"preview": "pnpm run build && vite preview",
+		"dev": "vp dev",
+		"preview": "pnpm run build && vp preview",
 		"start": "wrangler dev",
-		"test": "vitest"
+		"test": "vp test run"
 	},
 	"dependencies": {
 		"hono": "^4.11.1"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.3.9",
-		"@cloudflare/vite-plugin": "^1.19.0",
-		"@cloudflare/vitest-pool-workers": "^0.10.15",
+		"@cloudflare/vite-plugin": "^1.69.1",
+		"@cloudflare/vitest-plugin": "^1.8.4",
 		"typescript": "^5.9.3",
-		"vite": "7.3.0",
-		"vitest": "2.1.9",
-		"wrangler": "^4.56.0"
+		"vite": "catalog:",
+		"vite-plus": "catalog:",
+		"vitest": "catalog:",
+		"wrangler": "^4.164.0"
 	},
-	"packageManager": "pnpm@10.26.1"
+	"packageManager": "pnpm@12.21.0"
 }
